@@ -42,6 +42,20 @@
               },
               "queryRef": "Medidas.Orders",
               "nativeQueryRef": "Orders"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Medidas"
+                    }
+                  },
+                  "Property": "Ticket Medio"
+                }
+              },
+              "queryRef": "Medidas.Ticket Medio",
+              "nativeQueryRef": "Ticket Medio"
             }
           ]
         }

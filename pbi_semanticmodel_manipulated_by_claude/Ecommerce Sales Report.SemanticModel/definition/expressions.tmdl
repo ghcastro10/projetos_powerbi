@@ -1,6 +1,6 @@
 expression kaggle_ecommerce_sales_dataset =
 		let
-		    Source = Folder.Files("C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset")
+		    Source = Folder.Files("C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\pbi_semanticmodel_manipulated_by_claude\kaggle_ecommerce_sales_dataset")
 		in
 		    Source
 	lineageTag: f556fd72-7245-47f0-b80b-4b44377da6a0

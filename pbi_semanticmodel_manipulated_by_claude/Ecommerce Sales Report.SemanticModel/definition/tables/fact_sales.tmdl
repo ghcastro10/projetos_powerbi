@@ -126,9 +126,9 @@ table fact_sales
 		mode: import
 		source =
 				let
-				    Source = Folder.Files("C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset"),
-				    #"C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset\_Amazon Sale Report csv" = Source{[#"Folder Path"="C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset\",Name="Amazon Sale Report.csv"]}[Content],
-				    #"Imported CSV" = Csv.Document(#"C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset\_Amazon Sale Report csv",[Delimiter=",", Columns=24, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    Source = Folder.Files("C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\pbi_semanticmodel_manipulated_by_claude\kaggle_ecommerce_sales_dataset"),
+				    #"C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\pbi_semanticmodel_manipulated_by_claude\kaggle_ecommerce_sales_dataset\_Amazon Sale Report csv" = Source{[#"Folder Path"="C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\pbi_semanticmodel_manipulated_by_claude\kaggle_ecommerce_sales_dataset\",Name="Amazon Sale Report.csv"]}[Content],
+				    #"Imported CSV" = Csv.Document(#"C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\pbi_semanticmodel_manipulated_by_claude\kaggle_ecommerce_sales_dataset\_Amazon Sale Report csv",[Delimiter=",", Columns=24, Encoding=1252, QuoteStyle=QuoteStyle.None]),
 				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
 				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"index", Int64.Type}, {"Order ID", type text}, {"Date", type text}, {"Status", type text}, {"Fulfilment", type text}, {"Sales Channel ", type text}, {"ship-service-level", type text}, {"Style", type text}, {"SKU", type text}, {"Category", type text}, {"Size", type text}, {"ASIN", type text}, {"Courier Status", type text}, {"Qty", Int64.Type}, {"currency", type text}, {"Amount", Int64.Type}, {"ship-city", type text}, {"ship-state", type text}, {"ship-postal-code", Int64.Type}, {"ship-country", type text}, {"promotion-ids", type text}, {"B2B", type logical}, {"fulfilled-by", type text}, {"Unnamed: 22", type text}}),
 				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Style", "Category", "Size", "ASIN", "ship-country", "B2B", "fulfilled-by", "Unnamed: 22", "currency", "ship-service-level"}),
