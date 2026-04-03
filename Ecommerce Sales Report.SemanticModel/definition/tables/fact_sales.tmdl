@@ -1,0 +1,142 @@
+table fact_sales
+	lineageTag: 4878f9ad-bae5-4701-bbf3-8d7c08f5864d
+
+	column index
+		dataType: int64
+		formatString: 0
+		lineageTag: 05cd61b5-7c2c-492f-ac7c-1a3e5b75f92f
+		summarizeBy: sum
+		sourceColumn: index
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order ID'
+		dataType: string
+		lineageTag: eadcf0e9-9516-4ceb-af06-ba47665862de
+		summarizeBy: none
+		sourceColumn: Order ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 2c649bdc-e31e-4af8-9cbc-c2a052138d7d
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column Status
+		dataType: string
+		lineageTag: 6732ca3a-69ff-4da3-a957-b557df9840dd
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fulfilment
+		dataType: string
+		lineageTag: 54c815ee-99ed-4841-b4b8-18251baa3920
+		summarizeBy: none
+		sourceColumn: Fulfilment
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sales Channel '
+		dataType: string
+		lineageTag: 07a30245-4b71-43cc-98a9-da26f364636c
+		summarizeBy: none
+		sourceColumn: "Sales Channel "
+
+		annotation SummarizationSetBy = Automatic
+
+	column SKU
+		dataType: string
+		lineageTag: 8c609898-ed8d-42a3-b5d4-f14ec585590e
+		summarizeBy: none
+		sourceColumn: SKU
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Courier Status'
+		dataType: string
+		lineageTag: 4d0a8ae8-dbd6-4a49-9827-6601c853ae9a
+		summarizeBy: none
+		sourceColumn: Courier Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Qty
+		dataType: int64
+		formatString: 0
+		lineageTag: 8768ab71-486a-40bb-9607-8ad659c389e6
+		summarizeBy: sum
+		sourceColumn: Qty
+
+		annotation SummarizationSetBy = Automatic
+
+	column Amount
+		dataType: int64
+		formatString: 0
+		lineageTag: 3e3a4b37-838e-49bd-b3c8-9000c9b74d4a
+		summarizeBy: sum
+		sourceColumn: Amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column ship-city
+		dataType: string
+		lineageTag: 2ccbe3dc-3008-4cde-b679-267a1de2d7d9
+		summarizeBy: none
+		sourceColumn: ship-city
+
+		annotation SummarizationSetBy = Automatic
+
+	column ship-state
+		dataType: string
+		lineageTag: d201ec39-5327-4a28-aa5e-ea6ff31f8d22
+		summarizeBy: none
+		sourceColumn: ship-state
+
+		annotation SummarizationSetBy = Automatic
+
+	column ship-postal-code
+		dataType: int64
+		formatString: 0
+		lineageTag: 015a5645-d440-4b03-8800-bf3f431c6eb5
+		summarizeBy: sum
+		sourceColumn: ship-postal-code
+
+		annotation SummarizationSetBy = Automatic
+
+	column promotion-ids
+		dataType: string
+		lineageTag: f6c67c92-b738-4416-9cb1-6ccff0877870
+		summarizeBy: none
+		sourceColumn: promotion-ids
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_sales = m
+		mode: import
+		source =
+				let
+				    Source = Folder.Files("C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset"),
+				    #"C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset\_Amazon Sale Report csv" = Source{[#"Folder Path"="C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset\",Name="Amazon Sale Report.csv"]}[Content],
+				    #"Imported CSV" = Csv.Document(#"C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset\_Amazon Sale Report csv",[Delimiter=",", Columns=24, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"index", Int64.Type}, {"Order ID", type text}, {"Date", type text}, {"Status", type text}, {"Fulfilment", type text}, {"Sales Channel ", type text}, {"ship-service-level", type text}, {"Style", type text}, {"SKU", type text}, {"Category", type text}, {"Size", type text}, {"ASIN", type text}, {"Courier Status", type text}, {"Qty", Int64.Type}, {"currency", type text}, {"Amount", Int64.Type}, {"ship-city", type text}, {"ship-state", type text}, {"ship-postal-code", Int64.Type}, {"ship-country", type text}, {"promotion-ids", type text}, {"B2B", type logical}, {"fulfilled-by", type text}, {"Unnamed: 22", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Style", "Category", "Size", "ASIN", "ship-country", "B2B", "fulfilled-by", "Unnamed: 22", "currency", "ship-service-level"}),
+				    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Removed Columns", {{"Date", type date}}, "en-US")
+				in
+				    #"Changed Type with Locale"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

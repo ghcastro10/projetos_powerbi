@@ -1,0 +1,102 @@
+table dim_calendario
+	lineageTag: b1c2d3e4-f5a6-4789-b012-c3d4e5f67891
+
+	column Data
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		isKey
+		lineageTag: a1b2c3d4-e5f6-4789-b012-c3d4e5f67892
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = Automatic
+		annotation UnderlyingDateTimeDataType = Date
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column IdAno
+		dataType: int64
+		formatString: 0
+		lineageTag: b2c3d4e5-f6a7-4890-c123-d4e5f6a78901
+		summarizeBy: none
+		sourceColumn: IdAno
+
+		annotation SummarizationSetBy = Automatic
+
+	column IdMes
+		dataType: int64
+		formatString: 0
+		lineageTag: c3d4e5f6-a7b8-4901-d234-e5f6a7b89012
+		summarizeBy: none
+		sourceColumn: IdMes
+
+		annotation SummarizationSetBy = Automatic
+
+	column NomeMesAbreviado
+		dataType: string
+		lineageTag: d4e5f6a7-b8c9-4012-e345-f6a7b8c90123
+		summarizeBy: none
+		sourceColumn: NomeMesAbreviado
+
+		annotation SummarizationSetBy = Automatic
+
+	column IdAnoMes
+		dataType: int64
+		formatString: 0
+		lineageTag: e5f6a7b8-c9d0-4123-f456-a7b8c9d01234
+		summarizeBy: none
+		sourceColumn: IdAnoMes
+
+		annotation SummarizationSetBy = Automatic
+
+	column AnoMes
+		dataType: string
+		lineageTag: f6a7b8c9-d0e1-4234-a567-b8c9d0e12345
+		summarizeBy: none
+		sourceColumn: AnoMes
+
+		annotation SummarizationSetBy = Automatic
+
+	column MesRelativo
+		dataType: int64
+		formatString: 0
+		lineageTag: a7b8c9d0-e1f2-4345-b678-c9d0e1f23456
+		summarizeBy: none
+		sourceColumn: MesRelativo
+
+		annotation SummarizationSetBy = Automatic
+
+	column AnoRelativo
+		dataType: int64
+		formatString: 0
+		lineageTag: b8c9d0e1-f2a3-4456-c789-d0e1f2a34567
+		summarizeBy: none
+		sourceColumn: AnoRelativo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_calendario = m
+		mode: import
+		source =
+				let
+				    MinDate = List.Min(fact_sales[Date]),
+				    MaxDate = List.Max(fact_sales[Date]),
+				    DateList = List.Dates(MinDate, Duration.Days(MaxDate - MinDate) + 1, #duration(1, 0, 0, 0)),
+				    Today = Date.From(DateTime.LocalNow()),
+				    TodayYear = Date.Year(Today),
+				    TodayMonth = Date.Month(Today),
+				    Source = Table.FromList(DateList, Splitter.SplitByNothing(), {"Data"}, null, ExtraValues.Error),
+				    #"Changed Type" = Table.TransformColumnTypes(Source, {{"Data", type date}}),
+				    #"Added IdAno" = Table.AddColumn(#"Changed Type", "IdAno", each Date.Year([Data]), Int64.Type),
+				    #"Added IdMes" = Table.AddColumn(#"Added IdAno", "IdMes", each Date.Month([Data]), Int64.Type),
+				    #"Added NomeMesAbreviado" = Table.AddColumn(#"Added IdMes", "NomeMesAbreviado", each Text.Proper(Date.ToText([Data], "MMM", "pt-BR")), type text),
+				    #"Added IdAnoMes" = Table.AddColumn(#"Added NomeMesAbreviado", "IdAnoMes", each Date.Year([Data]) * 100 + Date.Month([Data]), Int64.Type),
+				    #"Added AnoMes" = Table.AddColumn(#"Added IdAnoMes", "AnoMes", each Text.Lower(Date.ToText([Data], "MMM", "pt-BR")) & "-" & Text.End(Text.From(Date.Year([Data])), 2), type text),
+				    #"Added MesRelativo" = Table.AddColumn(#"Added AnoMes", "MesRelativo", each (Date.Year([Data]) * 12 + Date.Month([Data])) - (TodayYear * 12 + TodayMonth), Int64.Type),
+				    #"Added AnoRelativo" = Table.AddColumn(#"Added MesRelativo", "AnoRelativo", each Date.Year([Data]) - TodayYear, Int64.Type)
+				in
+				    #"Added AnoRelativo"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,8 @@
+relationship AutoDetected_7c8c6088-8002-41d6-91ed-197c288c074c
+	fromColumn: fact_sales.SKU
+	toColumn: dim_product.SKU
+
+relationship c9d0e1f2-a3b4-4567-d890-e1f2a3b45678
+	fromColumn: fact_sales.Date
+	toColumn: dim_calendario.Data
+

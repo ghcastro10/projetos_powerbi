@@ -1,0 +1,27 @@
+table Medidas
+	lineageTag: c33df03a-9737-4504-9cb6-b6eab78666d4
+
+	measure 'Sales Total' = SUMX ( fact_sales, fact_sales[Qty] * fact_sales[Amount] )
+		formatString: #,0.00
+		lineageTag: 4ada3ede-495a-4122-b03a-13e3919e0c58
+
+	measure Orders = DISTINCTCOUNT ( fact_sales[Order ID] )
+		formatString: #,0
+		lineageTag: 3e1f5619-3ea2-48d2-84a5-a03abd0f9470
+
+	measure 'Ticket Medio' = DIVIDE ( [Sales Total], [Orders] )
+		formatString: #,0.00
+		lineageTag: a7b2c1d4-e5f6-4789-b012-c3d4e5f67890
+
+	partition Medidas = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

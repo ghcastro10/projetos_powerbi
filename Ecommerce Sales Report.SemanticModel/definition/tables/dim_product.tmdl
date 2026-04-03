@@ -1,0 +1,45 @@
+table dim_product
+	lineageTag: 8d1abbad-56ae-482d-bac4-c8cb9d8058dc
+
+	column SKU
+		dataType: string
+		lineageTag: 7dca2bb7-6959-4458-863b-aafaa6cf8f59
+		summarizeBy: none
+		sourceColumn: SKU
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: d054fb52-216a-4428-bb3b-0052b5191e10
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column Size
+		dataType: string
+		lineageTag: a288a342-0947-4451-8b85-8f22d276ada1
+		summarizeBy: none
+		sourceColumn: Size
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_product = m
+		mode: import
+		source =
+				let
+				    Source = Folder.Files("C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset"),
+				    #"C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset\_Amazon Sale Report csv" = Source{[#"Folder Path"="C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset\",Name="Amazon Sale Report.csv"]}[Content],
+				    #"Imported CSV" = Csv.Document(#"C:\Users\Gustavo H. de Castro\Desktop\pbi_claude\kaggle_ecommerce_sales_dataset\_Amazon Sale Report csv",[Delimiter=",", Columns=24, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"index", Int64.Type}, {"Order ID", type text}, {"Date", type text}, {"Status", type text}, {"Fulfilment", type text}, {"Sales Channel ", type text}, {"ship-service-level", type text}, {"Style", type text}, {"SKU", type text}, {"Category", type text}, {"Size", type text}, {"ASIN", type text}, {"Courier Status", type text}, {"Qty", Int64.Type}, {"currency", type text}, {"Amount", Int64.Type}, {"ship-city", type text}, {"ship-state", type text}, {"ship-postal-code", Int64.Type}, {"ship-country", type text}, {"promotion-ids", type text}, {"B2B", type logical}, {"fulfilled-by", type text}, {"Unnamed: 22", type text}}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Changed Type",{"SKU", "Category", "Size"}),
+				    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns")
+				in
+				    #"Removed Duplicates"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

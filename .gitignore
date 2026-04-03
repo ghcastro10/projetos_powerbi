@@ -1,0 +1,7 @@
+# Power BI cache files
+**/.pbi/cache.abf
+**/.pbi/localSettings.json
+
+# OS files
+.DS_Store
+Thumbs.db
